@@ -31,6 +31,9 @@ class SplashConfig {
   final String title;
   final String subtitle;
 
+  // Tag identifikasi untuk animasi Hero
+  final String heroTag;
+
   const SplashConfig({
     this.svgAssetPath = 'assets/logo1.svg',
     this.animationDuration = const Duration(milliseconds: 3000),
@@ -44,5 +47,6 @@ class SplashConfig {
     this.defaultFillColor = Colors.black,
     this.title = 'My Awesome App',
     this.subtitle = 'Initializing...',
+    this.heroTag = 'app_logo_hero',
   });
 }

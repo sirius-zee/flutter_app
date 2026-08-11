@@ -1,9 +1,10 @@
+// lib/pages/splash_page.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../config/splash_config.dart';
-import '../models/svg_path_data.dart';
-import '../utils/svg_parser.dart';
-import '../widgets/svg_multi_path_painter.dart';
+import 'package:my_app/config/splash_config.dart';
+import 'package:my_app/models/svg_path_data.dart';
+import 'package:my_app/utils/svg_parser.dart';
+import 'package:my_app/widgets/svg_multi_path_painter.dart';
 
 class SplashPage extends StatefulWidget {
   final SplashConfig config;
@@ -51,7 +52,7 @@ class _SplashPageState extends State<SplashPage>
 
     Timer(widget.config.navigateDelay, () {
       if (mounted) {
-        Navigator.pushReplacementNamed(context, widget.config.nextRoute);
+        Navigator.of(context).pushReplacementNamed(widget.config.nextRoute);
       }
     });
   }
@@ -85,41 +86,67 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: widget.config.logoWidth,
-              height: widget.config.logoHeight,
-              child: _isLoadingSvg || _pathList.isEmpty
-                  ? const Center(child: CircularProgressIndicator())
-                  : AnimatedBuilder(
-                      animation: _animationController,
-                      builder: (context, child) {
-                        return CustomPaint(
-                          size: Size(
-                            widget.config.logoWidth,
-                            widget.config.logoHeight,
-                          ),
-                          painter: SvgMultiPathPainter(
-                            pathList: _pathList,
-                            totalBounds: _totalBounds,
-                            strokeProgress: _strokeAnimation.value,
-                            fillProgress: _fillAnimation.value,
-                            strokeWidth: widget.config.strokeWidth,
-                          ),
-                        );
-                      },
-                    ),
+            // Hero disempurnakan dengan flightShuttleBuilder
+            Hero(
+              tag: widget.config.heroTag,
+              flightShuttleBuilder:
+                  (
+                    flightContext,
+                    animation,
+                    flightDirection,
+                    fromHeroContext,
+                    toHeroContext,
+                  ) {
+                    // Ambil widget tujuan (LoginPage) secara aman
+                    final Widget toHeroWidget = toHeroContext.widget;
+
+                    return Material(
+                      color: Colors.transparent,
+                      child: FadeTransition(
+                        opacity: CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeInOut,
+                        ),
+                        child: toHeroWidget,
+                      ),
+                    );
+                  },
+              child: SizedBox(
+                width: widget.config.logoWidth,
+                height: widget.config.logoHeight,
+                child: _isLoadingSvg || _pathList.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (context, child) {
+                          return CustomPaint(
+                            size: Size(
+                              widget.config.logoWidth,
+                              widget.config.logoHeight,
+                            ),
+                            painter: SvgMultiPathPainter(
+                              pathList: _pathList,
+                              totalBounds: _totalBounds,
+                              strokeProgress: _strokeAnimation.value,
+                              fillProgress: _fillAnimation.value,
+                              strokeWidth: widget.config.strokeWidth,
+                            ),
+                          );
+                        },
+                      ),
+              ),
             ),
             const SizedBox(height: 40),
             Text(
               widget.config.title,
-              style: const TextStyle(
-                fontSize: 28,
+              style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
               ),
@@ -127,7 +154,9 @@ class _SplashPageState extends State<SplashPage>
             const SizedBox(height: 16),
             Text(
               widget.config.subtitle,
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
