@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:my_app/core/services/notification_service.dart';
+// import 'package:my_app/core/services/notification_service.dart';
 import 'package:my_app/widgets/atoms/app_button.dart';
 import 'package:my_app/widgets/atoms/inputs/app_text_field.dart';
 import 'package:my_app/widgets/atoms/theme_mode_selector.dart';
@@ -66,14 +66,14 @@ class _LoginScreenState extends State<LoginScreen>
 
   // --- Handling Login Async dengan Loading Delay ---
   Future<void> _handleLogin() async {
-    if (!_formKey.currentState!.validate()) return;
+    // if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       _isLoading = true;
     });
 
-    final username = _usernameController.text.trim();
-    final password = _passwordController.text.trim();
+    // final username = _usernameController.text.trim();
+    // final password = _passwordController.text.trim();
 
     // Simulasi jeda request API jaringan
     await Future.delayed(const Duration(milliseconds: 1500));
@@ -84,19 +84,19 @@ class _LoginScreenState extends State<LoginScreen>
       _isLoading = false;
     });
 
-    if (username == 'admin' && password == 'admin') {
-      NotificationService.success(
-        'Selamat datang kembali, Admin!',
-        title: 'Login Berhasil',
-      );
+    // if (username == 'admin' && password == 'admin') {
+    //   NotificationService.success(
+    //     'Selamat datang kembali, Admin!',
+    //     title: 'Login Berhasil',
+    //   );
 
-      Navigator.pushReplacementNamed(context, '/home');
-    } else {
-      NotificationService.error(
-        'Username atau Password salah. Gunakan "admin"',
-        title: 'Login Gagal',
-      );
-    }
+    Navigator.pushReplacementNamed(context, '/home');
+    // } else {
+    //   NotificationService.error(
+    //     'Username atau Password salah. Gunakan "admin"',
+    //     title: 'Login Gagal',
+    //   );
+    // }
   }
 
   @override

@@ -9,6 +9,7 @@ import 'package:my_app/screens/register_screen.dart';
 import 'package:my_app/screens/home_screen.dart';
 import 'package:my_app/screens/profile_screen.dart';
 import 'package:my_app/widgets/layout/main_scaffold.dart';
+import 'package:my_app/widgets/atoms/navigation/nav_animation_type.dart';
 
 void main() async {
   // Memastikan binding Flutter siap sebelum membaca SharedPreferences
@@ -100,6 +101,7 @@ class MyApp extends StatelessWidget {
               case '/home':
                 return MaterialPageRoute(
                   builder: (context) => const MainScaffold(
+                    animationType: NavAnimationType.slidingPill,
                     pages: [
                       HomeScreen(),
                       Center(child: Text('Halaman Analistik')),

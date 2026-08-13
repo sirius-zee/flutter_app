@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/core/services/notification_service.dart';
+import 'package:my_app/widgets/atoms/dialogs/logout_confirm_dialog.dart';
 import 'package:my_app/widgets/features/profile/presentation/widgets/profile_menu_item.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  Future<void> _handleLogout(BuildContext context) async {
+    // 1. Tampilkan dialog konfirmasi
+    final bool? confirmed = await LogoutConfirmDialog.show(context);
+
+    // 2. Jika pengguna menekan "Keluar"
+    if (confirmed == true && context.mounted) {
+      // TODO: Masukkan logika membersihkan session/token di sini jika ada
+
+      // 3. Tampilkan toast notification menggunakan NotificationService kamu
+      NotificationService.info(
+        'Kamu telah berhasil keluar dari akun',
+        title: 'Sampai Jumpa!',
+      );
+
+      // 4. Navigasi kembali ke halaman Login & hapus seluruh tumpukan halaman
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,9 +195,7 @@ class ProfileScreen extends StatelessWidget {
                 textColor: colors.error,
                 iconColor: colors.error,
                 trailing: const SizedBox.shrink(),
-                onTap: () {
-                  // Jalankan dialog konfirmasi keluar
-                },
+                onTap: () => _handleLogout(context),
               ),
             ),
           ],
