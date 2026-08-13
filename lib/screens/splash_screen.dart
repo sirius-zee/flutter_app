@@ -1,21 +1,20 @@
-// lib/pages/splash_page.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:my_app/config/splash_config.dart';
 import 'package:my_app/models/svg_path_data.dart';
 import 'package:my_app/utils/svg_parser.dart';
-import 'package:my_app/widgets/svg_multi_path_painter.dart';
+import 'package:my_app/widgets/atoms/svg_multi_path_painter.dart';
 
-class SplashPage extends StatefulWidget {
+class SplashScreen extends StatefulWidget {
   final SplashConfig config;
 
-  const SplashPage({super.key, this.config = const SplashConfig()});
+  const SplashScreen({super.key, this.config = const SplashConfig()});
 
   @override
-  State<SplashPage> createState() => _SplashPageState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashPageState extends State<SplashPage>
+class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _strokeAnimation;
@@ -104,7 +103,7 @@ class _SplashPageState extends State<SplashPage>
                     fromHeroContext,
                     toHeroContext,
                   ) {
-                    // Ambil widget tujuan (LoginPage) secara aman
+                    // Ambil widget tujuan (LoginScreen) secara aman
                     final Widget toHeroWidget = toHeroContext.widget;
 
                     return Material(

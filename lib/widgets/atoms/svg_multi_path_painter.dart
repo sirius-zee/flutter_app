@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../models/svg_path_data.dart';
+import '../../models/svg_path_data.dart';
 
 class SvgMultiPathPainter extends CustomPainter {
   final List<SvgPathData> pathList;

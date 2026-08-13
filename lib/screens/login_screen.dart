@@ -1,21 +1,20 @@
-// lib/pages/login_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:my_app/core/theme/services/notification_service.dart';
-import 'package:my_app/widgets/app_button.dart';
-import 'package:my_app/widgets/app_text_field.dart';
-import 'package:my_app/widgets/theme_mode_selector.dart';
+import 'package:my_app/core/services/notification_service.dart';
+import 'package:my_app/widgets/atoms/app_button.dart';
+import 'package:my_app/widgets/atoms/inputs/app_text_field.dart';
+import 'package:my_app/widgets/atoms/theme_mode_selector.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   final String heroTag;
 
-  const LoginPage({super.key, this.heroTag = 'app_logo_hero'});
+  const LoginScreen({super.key, this.heroTag = 'app_logo_hero'});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage>
+class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _formAnimationController;
   late Animation<double> _formFadeAnimation;
@@ -176,7 +175,7 @@ class _LoginPageState extends State<LoginPage>
                               AppTextField(
                                 label: 'Username',
                                 hintText: 'Masukkan username Anda',
-                                prefixIcon: Icons.person_outline,
+                                prefixIcon: const Icon(Icons.person_outline),
                                 controller: _usernameController,
                                 enabled: !_isLoading,
                                 isRequired: true,
@@ -194,7 +193,9 @@ class _LoginPageState extends State<LoginPage>
                               AppTextField(
                                 label: 'Password',
                                 hintText: 'Masukkan password Anda',
-                                prefixIcon: Icons.lock_outline_rounded,
+                                prefixIcon: const Icon(
+                                  Icons.lock_outline_rounded,
+                                ),
                                 isPassword: true,
                                 controller: _passwordController,
                                 enabled: !_isLoading,

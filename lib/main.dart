@@ -1,13 +1,14 @@
-// main.dart
 import 'package:flutter/material.dart';
 import 'package:my_app/config/splash_config.dart';
 import 'package:my_app/core/theme/app_theme.dart';
-import 'package:my_app/core/theme/services/notification_service.dart';
+import 'package:my_app/core/services/notification_service.dart';
 import 'package:my_app/core/theme/theme_controller.dart';
-import 'package:my_app/pages/splash_page.dart';
-import 'package:my_app/pages/login_page.dart';
-import 'package:my_app/pages/register_page.dart';
-import 'package:my_app/pages/home_page.dart';
+import 'package:my_app/screens/splash_screen.dart';
+import 'package:my_app/screens/login_screen.dart';
+import 'package:my_app/screens/register_screen.dart';
+import 'package:my_app/screens/home_screen.dart';
+import 'package:my_app/screens/profile_screen.dart';
+import 'package:my_app/widgets/layout/main_scaffold.dart';
 
 void main() async {
   // Memastikan binding Flutter siap sebelum membaca SharedPreferences
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => const SplashPage(
+                  builder: (context) => const SplashScreen(
                     config: SplashConfig(
                       svgAssetPath: 'assets/logo1.svg',
                       animationDuration: Duration(milliseconds: 2500),
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
                   transitionDuration: const Duration(milliseconds: 800),
                   reverseTransitionDuration: const Duration(milliseconds: 600),
                   pageBuilder: (context, animation, secondaryAnimation) =>
-                      const LoginPage(),
+                      const LoginScreen(),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
                         return FadeTransition(
@@ -83,7 +84,7 @@ class MyApp extends StatelessWidget {
                   settings: settings,
                   transitionDuration: const Duration(milliseconds: 600),
                   pageBuilder: (context, animation, secondaryAnimation) =>
-                      const RegisterPage(),
+                      const RegisterScreen(),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
                         return FadeTransition(
@@ -98,7 +99,14 @@ class MyApp extends StatelessWidget {
 
               case '/home':
                 return MaterialPageRoute(
-                  builder: (context) => const HomePage(),
+                  builder: (context) => const MainScaffold(
+                    pages: [
+                      HomeScreen(),
+                      Center(child: Text('Halaman Analistik')),
+                      Center(child: Text('Halaman Riwayat')),
+                      ProfileScreen(),
+                    ],
+                  ),
                 );
 
               default:
