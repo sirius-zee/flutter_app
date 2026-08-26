@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_app/widgets/atoms/inputs/app_date_picker_field.dart';
 import 'package:my_app/widgets/atoms/inputs/app_dropdown_field.dart';
 import 'package:my_app/widgets/atoms/inputs/app_option_switcher.dart';
+import 'package:my_app/widgets/atoms/inputs/app_text_area_field.dart';
 import 'package:my_app/widgets/atoms/inputs/app_text_field.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final TextEditingController _notesController = TextEditingController();
 
   // Additional Form States
   String _selectedGender = 'Laki-laki';
@@ -36,6 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _notesController.dispose();
     super.dispose();
   }
 
@@ -73,18 +76,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  'Lengkapi Data Diri',
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: colors.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Silakan isi formulir di bawah ini untuk mendaftar.',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colors.onSurfaceVariant,
+                Center(
+                  child: Text(
+                    'Silakan isi formulir di bawah ini untuk mendaftar.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -174,11 +171,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   isRequired: true,
                   enabled: !_isLoading,
                   value: _selectedRole,
-                  prefixIcon: Icons.badge_outlined,
+                  prefixIcon: const Icon(Icons.badge_outlined),
                   items: _roles.map((role) {
-                    return DropdownMenuItem<String>(
+                    return AppDropdownOption<String>(
                       value: role,
-                      child: Text(role),
+                      label: role,
                     );
                   }).toList(),
                   onChanged: (val) {
@@ -187,6 +184,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                   },
                 ),
+                const SizedBox(height: 16),
+
+                AppTextAreaField(
+                  label: 'Catatan Tamu',
+                  hintText: 'Tuliskan catatan tambahan di sini...',
+                  controller: _notesController,
+                  isRequired: false,
+                  minLines: 3,
+                  maxLines: 5,
+                  onChanged: (value) {},
+                ),
+
                 const SizedBox(height: 16),
 
                 // 7. Password

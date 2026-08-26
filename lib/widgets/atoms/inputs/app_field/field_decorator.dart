@@ -1,5 +1,5 @@
-// lib/widgets/atoms/inputs/field_decorator.dart
 import 'package:flutter/material.dart';
+import 'field_variant.dart';
 
 class FieldDecorator extends StatefulWidget {
   final String? label;
@@ -12,7 +12,8 @@ class FieldDecorator extends StatefulWidget {
   final bool enabled;
   final VoidCallback? onTap;
   final FocusNode? focusNode;
-  final EdgeInsetsGeometry? contentPadding; // <-- Tambah parameter ini
+  final EdgeInsetsGeometry? contentPadding;
+  final FieldVariant variant; // <-- Tambahkan varian di sini
   final Widget child;
 
   const FieldDecorator({
@@ -27,9 +28,10 @@ class FieldDecorator extends StatefulWidget {
     this.enabled = true,
     this.onTap,
     this.focusNode,
-    this.contentPadding, // <-- Default null, nanti dipfallback di build
+    this.contentPadding,
+    FieldVariant? variant,
     required this.child,
-  });
+  }) : variant = variant ?? FieldVariant.underlined;
 
   @override
   State<FieldDecorator> createState() => _FieldDecoratorState();
@@ -78,19 +80,72 @@ class _FieldDecoratorState extends State<FieldDecorator> {
     final colors = theme.colorScheme;
     final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
 
-    final Color fillColor = !widget.enabled
-        ? colors.surfaceContainerHighest.withValues(alpha: 0.4)
-        : colors.surfaceContainerLow;
+    // --- Dynamic Color & Style Logic berdasarkan Variant ---
+    Color getFillColor() {
+      if (!widget.enabled) {
+        return colors.surfaceContainerHighest.withValues(alpha: 0.4);
+      }
 
-    final Color borderColor = !widget.enabled
-        ? colors.outline.withValues(alpha: 0.15)
-        : hasError
-        ? colors.error
-        : _isFocused
-        ? colors.primary
-        : colors.outline;
+      switch (widget.variant) {
+        case FieldVariant.filled:
+          if (hasError) {
+            // Saat error: Background agak kemerahan/soft error
+            return colors.errorContainer.withValues(alpha: 0.3);
+          }
+          if (_isFocused) {
+            // Saat focus: Background sedikit lebih terang/jelas
+            return colors.primaryContainer.withValues(alpha: 0.25);
+          }
+          // Idle / Normal State
+          return colors.surfaceContainerHighest.withValues(alpha: 0.6);
+
+        case FieldVariant.outlined:
+          return Colors.transparent;
+
+        case FieldVariant.underlined:
+          return Colors.transparent;
+      }
+    }
+
+    Color getBorderColor() {
+      if (!widget.enabled) {
+        return colors.outline.withValues(alpha: 0.15);
+      }
+      if (hasError) return colors.error;
+      if (_isFocused) return colors.primary;
+      return colors.outline;
+    }
 
     final double borderWidth = (_isFocused || hasError) ? 1.8 : 1.0;
+    final Color activeBorderColor = getBorderColor();
+
+    BoxBorder? getBorder() {
+      switch (widget.variant) {
+        case FieldVariant.outlined:
+          return Border.all(color: activeBorderColor, width: borderWidth);
+
+        case FieldVariant.filled:
+          // Murni tanpa border di kondisi apapun (idle, focus, maupun error)
+          return null;
+
+        case FieldVariant.underlined:
+          return Border(
+            bottom: BorderSide(color: activeBorderColor, width: borderWidth),
+          );
+      }
+    }
+
+    BorderRadius getBorderRadius() {
+      switch (widget.variant) {
+        case FieldVariant.outlined:
+        case FieldVariant.filled:
+          return BorderRadius.circular(
+            12,
+          ); // Penuh 12px untuk Outlined dan Filled
+        case FieldVariant.underlined:
+          return BorderRadius.zero;
+      }
+    }
 
     final Color iconColor = !widget.enabled
         ? colors.onSurface.withValues(alpha: 0.38)
@@ -100,10 +155,11 @@ class _FieldDecoratorState extends State<FieldDecorator> {
         ? colors.primary
         : colors.onSurfaceVariant;
 
-    // Gunakan contentPadding kustom jika disediakan, jika tidak gunakan default
     final effectivePadding =
         widget.contentPadding ??
-        const EdgeInsets.symmetric(horizontal: 14, vertical: 2);
+        (widget.variant == FieldVariant.underlined
+            ? const EdgeInsets.symmetric(horizontal: 0, vertical: 2)
+            : const EdgeInsets.symmetric(horizontal: 14, vertical: 2));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,6 +169,8 @@ class _FieldDecoratorState extends State<FieldDecorator> {
         if (widget.label != null) ...[
           Row(
             children: [
+              if (widget.variant != FieldVariant.underlined)
+                const SizedBox(width: 8.0),
               Text(
                 widget.label!,
                 style: theme.textTheme.labelLarge?.copyWith(
@@ -140,15 +198,15 @@ class _FieldDecoratorState extends State<FieldDecorator> {
         // --- 2. Container Input Utama ---
         InkWell(
           onTap: widget.enabled ? widget.onTap : null,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: getBorderRadius(),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
-            padding: effectivePadding, // <-- Gunakan effectivePadding
+            padding: effectivePadding,
             decoration: BoxDecoration(
-              color: fillColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: borderColor, width: borderWidth),
+              color: getFillColor(),
+              borderRadius: getBorderRadius(),
+              border: getBorder(),
             ),
             child: Row(
               children: [
@@ -176,7 +234,9 @@ class _FieldDecoratorState extends State<FieldDecorator> {
         if (hasError || widget.helperText != null) ...[
           const SizedBox(height: 4),
           Padding(
-            padding: const EdgeInsets.only(left: 4),
+            padding: EdgeInsets.only(
+              left: widget.variant == FieldVariant.underlined ? 0 : 4,
+            ),
             child: Text(
               hasError ? widget.errorText! : widget.helperText!,
               style: theme.textTheme.bodySmall?.copyWith(

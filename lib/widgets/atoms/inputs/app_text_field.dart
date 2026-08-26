@@ -1,7 +1,7 @@
-// lib/widgets/atoms/inputs/app_text_field.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'field_decorator.dart';
+import 'app_field/field_decorator.dart';
+import 'app_field/field_variant.dart';
 
 class AppTextField extends StatefulWidget {
   final String? label;
@@ -16,7 +16,7 @@ class AppTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final bool obscureText;
-  final bool isPassword; // <-- Parameter isPassword
+  final bool isPassword;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onFieldSubmitted;
   final List<TextInputFormatter>? inputFormatters;
@@ -25,6 +25,9 @@ class AppTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final FormFieldSetter<String>? onSaved;
   final String? initialValue;
+  final FieldVariant? variant;
+  final EdgeInsetsGeometry?
+  contentPadding; // <-- Added contentPadding parameter
 
   const AppTextField({
     super.key,
@@ -40,7 +43,7 @@ class AppTextField extends StatefulWidget {
     this.keyboardType,
     this.textInputAction,
     this.obscureText = false,
-    this.isPassword = false, // <-- Default false
+    this.isPassword = false,
     this.onChanged,
     this.onFieldSubmitted,
     this.inputFormatters,
@@ -49,6 +52,8 @@ class AppTextField extends StatefulWidget {
     this.validator,
     this.onSaved,
     this.initialValue,
+    this.variant,
+    this.contentPadding,
   });
 
   @override
@@ -61,13 +66,11 @@ class _AppTextFieldState extends State<AppTextField> {
   @override
   void initState() {
     super.initState();
-    // Jika isPassword true, default kan obscureText menjadi true
     _obscureText = widget.isPassword ? true : widget.obscureText;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Menentukan suffixIcon (otomatis toggle eye jika isPassword = true)
     Widget? effectiveSuffixIcon = widget.suffixIcon;
 
     if (widget.isPassword) {
@@ -107,6 +110,8 @@ class _AppTextFieldState extends State<AppTextField> {
           isRequired: widget.isRequired,
           enabled: widget.enabled,
           focusNode: widget.focusNode,
+          variant: widget.variant, // <-- Teruskan variant ke FieldDecorator
+          contentPadding: widget.contentPadding, // <-- Teruskan contentPadding
           child: TextField(
             controller: widget.controller,
             focusNode: widget.focusNode,

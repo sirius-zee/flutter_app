@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:my_app/core/services/notification_service.dart';
 import 'package:my_app/widgets/atoms/app_button.dart';
-import 'package:my_app/widgets/atoms/inputs/app_text_field.dart';
 import 'package:my_app/widgets/atoms/theme_mode_selector.dart';
+import 'package:my_app/widgets/atoms/inputs/app_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   final String heroTag;
